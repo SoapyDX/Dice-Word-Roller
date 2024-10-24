@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Word Roller</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .dice-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .dice {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        .dice img {
+            width: 100px;
+            height: 100px;
+        }
+        .word {
+            margin-top: 10px;
+            font-size: 20px;
+        }
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            width: 400px;
+            margin-top: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-group input {
+            width: 150px;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        .input-group textarea {
+            width: 150px;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        /* Positioning for SoundCloud input and player in the bottom-right */
+        #soundcloudContainer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 300px;
+        }
+
+        #soundcloudPlayer {
+            width: 100%;
+            height: 166px; /* Default height of SoundCloud player */
+            margin-top: 10px;
+        }
+
+        #soundcloudInputGroup {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #soundcloudInputGroup input {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+
+        #soundcloudInputGroup button {
+            padding: 10px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        iframe {
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Dice Word Roller</h1>
+
+    <!-- Input fields to set the word lists for each dice -->
+    <div class="input-container">
+        <div class="input-group">
+            <label for="list1">Words for Dice 1:</label>
+            <textarea id="list1" placeholder="Enter words separated by commas"></textarea>
+        </div>
+        <div class="input-group">
+            <label for="list2">Words for Dice 2:</label>
+            <textarea id="list2" placeholder="Enter words separated by commas"></textarea>
+        </div>
+    </div>
+
+    <button onclick="setWordLists()">Set Word Lists</button>
+
+    <!-- Dice display -->
+    <div class="dice-container">
+        <div class="dice" id="dice1" onclick="rollDice(1)">
+            <img src="dice.png" alt="Dice 1">
+            <div class="word" id="word1">Roll me</div>
+        </div>
+        <div class="dice" id="dice2" onclick="rollDice(2)">
+            <img src="dice.png" alt="Dice 2">
+            <div class="word" id="word2">Roll me</div>
+        </div>
+    </div>
+
+    <!-- SoundCloud Player and Input Positioned on Bottom-Right -->
+    <div id="soundcloudContainer">
+        <!-- SoundCloud link input and button -->
+        <div id="soundcloudInputGroup">
+            <input id="soundcloudLink" type="text" placeholder="Enter SoundCloud URL">
+            <button onclick="embedSoundCloud()">Play (Soundcloud Links Only)</button>
+        </div>
+
+        <!-- SoundCloud Player Embed -->
+        <div id="soundcloudPlayer"></div>
+    </div>
+
+    <script>
+        // Word lists
+        let wordsForDice1 = [];
+        let wordsForDice2 = [];
+
+        // Function to set the word lists from the input fields
+        function setWordLists() {
+            const list1 = document.getElementById('list1').value.split(',');
+            const list2 = document.getElementById('list2').value.split(',');
+            wordsForDice1 = list1.map(word => word.trim());
+            wordsForDice2 = list2.map(word => word.trim());
+            alert("Word lists updated!");
+        }
+
+        // Function to roll the dice and display a random word from the list
+        function rollDice(diceNumber) {
+            let word;
+            if (diceNumber === 1) {
+                if (wordsForDice1.length === 0) {
+                    alert("Please set the words for Dice 1.");
+                    return;
+                }
+                word = wordsForDice1[Math.floor(Math.random() * wordsForDice1.length)];
+                document.getElementById('word1').innerText = word;
+            } else if (diceNumber === 2) {
+                if (wordsForDice2.length === 0) {
+                    alert("Please set the words for Dice 2.");
+                    return;
+                }
+                word = wordsForDice2[Math.floor(Math.random() * wordsForDice2.length)];
+                document.getElementById('word2').innerText = word;
+            }
+        }
+
+        // Function to embed SoundCloud player
+        function embedSoundCloud() {
+            const link = document.getElementById('soundcloudLink').value;
+            if (!link) {
+                alert("Please enter a SoundCloud URL.");
+                return;
+            }
+            const embedHTML = `<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+                src="https://w.soundcloud.com/player/?url=${encodeURIComponent(link)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
+                </iframe>`;
+            document.getElementById('soundcloudPlayer').innerHTML = embedHTML;
+        }
+    </script>
+
+</body>
+</html>
